@@ -2,11 +2,7 @@ import os from "node:os"
 import fs from "node:fs"
 import { Buffer } from "node:buffer"
 import compressing from "compressing"
-import {
-  LagrangeDir,
-  binPath,
-  LagrangeReleaseDir,
-} from "./constants.js"
+import { LagrangeDir, binPath, LagrangeReleaseDir } from "./constants.js"
 
 /** 获取 Lagrange 下载链接 */
 function getReleaseUrl() {
@@ -53,13 +49,31 @@ function findExecutable(path) {
   }
 }
 
+/** 移动下载好的 Lagrange 到运行目录下 */
+export function moveExecutable() {
+  fs.renameSync(
+    findExecutable(`${LagrangeReleaseDir}/Lagrange.Onebot`),
+    binPath
+  )
+  fs.rmSync(`${LagrangeReleaseDir}/Lagrange.Onebot`, { recursive: true })
+  fs.chmod(binPath, 0o775, (err) => {
+    logger.warn(`chmod 失败, 可能无法成功启动, 请手动赋予 ${binPath} 执行权限`)
+  })
+}
 
-/** 下载最新 release 可执行文件并移动至 Lagrange 工作目录 */
-export async function downloadLagrange() {
+/**
+ * 下载最新 release 可执行文件并移动至 Lagrange 工作目录
+ * @param callback 下载完成后的回调
+ * */
+export async function downloadLagrange(callback = moveExecutable) {
+  logger.mark("下载 Lagrange.Onebot 中......")
   let url = getReleaseUrl(),
     isZip = url.endsWith(".zip")
   let resp = await fetch(url)
-
+  if (!resp.ok) {
+    logger.error(`下载 ${url} 失败，请尝试手动下载`)
+    return false
+  }
   let buffer = Buffer.from(await resp.arrayBuffer())
   let tmppath = `${LagrangeDir}/temp`
   fs.writeFileSync(tmppath, buffer)
@@ -73,14 +87,7 @@ export async function downloadLagrange() {
   fs.unlink(tmppath, (e) => {
     !e || console.log(e)
   })
-  fs.renameSync(
-    findExecutable(`${LagrangeReleaseDir}/Lagrange.Onebot`),
-    binPath
-  )
-  fs.chmod(binPath, 0o775, (err) => {
-    console.log(
-      `chmod 失败, 可能无法成功启动, 请手动赋予 ${binPath} 执行权限`,
-      err
-    )
-  })
+  callback()
+  logger.info("lagrange.onebot 下载完成")
+  return true
 }

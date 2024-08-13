@@ -1,42 +1,81 @@
 import plugin from "../../../lib/plugins/plugin.js"
+import common from "../../../lib/common/common.js"
+import {
+  restartLagrange,
+  updateLagrange,
+  killLagrange,
+} from "./lagrange/lagrange.js"
+import { updateManager } from "./plugin/update.js"
 
 export default class LagrangeManager extends plugin {
   constructor() {
     super({
       name: "Lagrange机器人登录管理",
-      dsc: "半自动管理 Lagrange(onebot) 的启动与停止, 方便登录/重登机器人",
+      dsc: "半？自动管理 Lagrange(onebot) 的启动与停止, 方便登录/重登机器人",
       priority: 99999,
       event: "message",
       rule: [
         {
           reg: "^#lagrange重启$",
           fnc: "restart",
+          permission: "master",
         },
         {
           reg: "^#lagrange更新$",
           fnc: "update",
+          permission: "master",
+        },
+        {
+          reg: "^#lagrange停止$",
+          fnc: "stop",
+          permission: "master",
+        },
+        {
+          reg: "^#lagrange插件更新$",
+          fnc: "updatePlugin",
+          permission: "master",
         },
         {
           reg: "^#lagrange帮助$",
           fnc: "help",
+          permission: "master",
         },
       ],
     })
   }
 
   /** 启动Lagrange */
-  async restart(e) {}
+  async restart(e) {
+    await e.reply("稍等，正在重新登录")
+    await common.sleep(1000)
+    restartLagrange()
+  }
 
   /** 更新Lagrange（重新下载） */
-  async update(e) {}
+  async update(e) {
+    await e.reply("稍等，正在更新")
+    await common.sleep(1000)
+    updateLagrange(e)
+  }
 
+  async stop(e) {
+    await e.reply("已停止，若无其他方式启动则只能手动重新启动")
+    await common.sleep(1000)
+    killLagrange()
+  }
+
+  async updatePlugin(e) {
+    await e.reply("正在更新 Lagrange 插件")
+    updateManager(e)
+  }
 
   async help(e) {
-    if (e.isMaster) {
-      await e.reply(
-        "#lagrange重启 - 让机器人重新登录\n" +
-          "#lagrange帮助 - 发送这条帮助信息"
-      )
-    }
+    e.reply(
+      "#lagrange重启 - 让机器人重新登录\n" +
+        "#lagrange更新 - 更新Lagrange并重登\n" +
+        "#lagrange停止 - 停止Lagrange, 停止后无备选方式则只能重新手动启动，谨慎操作\n" +
+        "#lagrange插件更新 - 更新本插件并重启\n" +
+        "#lagrange帮助 - 发送这条帮助信息"
+    )
   }
 }
