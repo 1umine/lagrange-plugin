@@ -1,0 +1,6 @@
+data
+node_modules
+.vscode
+pnpm-lock.yaml
+*.log
+config/*.yaml

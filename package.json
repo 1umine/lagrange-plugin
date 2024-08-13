@@ -1,0 +1,14 @@
+{
+  "name": "lagrange-plugin",
+  "version": "1.0.0",
+  "description": "lagrange process manager for yunzai",
+  "author": "1umine",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "test": "echo 'no test specified'"
+  },
+  "dependencies": {
+    "compressing": "^1.10.1"
+  }
+}
