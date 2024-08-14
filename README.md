@@ -19,6 +19,7 @@ pnpm install -P
 * #lagrange更新 - 下载新的 Lagrange 并重启
 * #lagrange停止 - 停止Lagrange, 停止后无备选方式则只能重新手动启动，谨慎操作
 * #lagrange插件更新 - 更新本插件并重启
+* #lagrange状态 - 查看 Lagrange 状态，能发就是正常
 
 ## 有关项目
 

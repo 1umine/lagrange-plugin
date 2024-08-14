@@ -31,6 +31,11 @@ export default class LagrangeManager extends plugin {
           permission: "master",
         },
         {
+          reg: "^#lagrange状态$",
+          fnc: "status",
+          permission: "master",
+        },
+        {
           reg: "^#lagrange插件更新$",
           fnc: "updatePlugin",
           permission: "master",
@@ -69,11 +74,16 @@ export default class LagrangeManager extends plugin {
     updateManager(e)
   }
 
+  async status(e) {
+    e.reply(`bot online: ${e.bot?.stat?.online}\nbot good: ${e.bot?.stat?.good}`)
+  }
+
   async help(e) {
     e.reply(
       "#lagrange重启 - 让机器人重新登录\n" +
         "#lagrange更新 - 更新Lagrange并重登\n" +
         "#lagrange停止 - 停止Lagrange, 停止后无备选方式则只能重新手动启动，谨慎操作\n" +
+        "#lagrange状态 - 查看 Lagrange 状态，能发就是正常\n" +
         "#lagrange插件更新 - 更新本插件并重启\n" +
         "#lagrange帮助 - 发送这条帮助信息"
     )
