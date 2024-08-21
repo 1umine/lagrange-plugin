@@ -25,18 +25,21 @@ async function startLagrange() {
     logger.warn("Lagrange 不存在，开始下载")
     await downloadLagrange()
   }
+
+  let firstLogin = false
   if (!fs.existsSync(`${LagrangeWorkDir}/keystore.json`)) {
     logger.warn(
       "\n\n\n\n首次登陆需要扫码，请扫描",
       fs.realpathSync(LagrangeWorkDir),
       "下 qr-0.png 进行扫码登陆 bot\n\n\n\n"
     )
+    firstLogin = true
   }
 
   ps = spawn(fs.realpathSync(binPath), {
     cwd: fs.realpathSync(LagrangeWorkDir),
     windowsHide: true,
-    stdio: ["ignore", "ignore", "inherit"],
+    stdio: ["ignore", firstLogin ? "inherit" : "ignore", "inherit"],
   })
   ps.on("exit", (code, signal) => {
     if (code !== 0) {
