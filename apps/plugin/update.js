@@ -5,6 +5,10 @@ import { PluginDir } from "../../tools/constants.js"
 export function updateManager(e) {
   let cmd = "git checkout . && git pull"
   exec(cmd, { cwd: PluginDir, windowsHide: true }, (err, stdout, stderr) => {
+    if (err) {
+      e.reply("更新失败：" + err.message)
+      return
+    }
     if (/(Already up[ -]to[ -]date|已经是最新的)/.test(stdout)) {
       e.reply("插件已是最新的了")
       return
