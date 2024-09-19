@@ -80,6 +80,14 @@ export async function updateLagrange(e) {
   }
 }
 
+/** 修改签名 URL */
+export function changeLagrangeSign(url) {
+  const cfgFile = `${LagrangeWorkDir}/appsettings.json`
+  const config = JSON.parse(fs.readFileSync(cfgFile, "utf-8"))
+  config.SignServerUrl = url
+  fs.writeFileSync(cfgFile, JSON.stringify(config, null, 2))
+}
+
 startLagrange()
 process.on("exit", (s) => {
   logger.mark("Yunzai 进程退出")

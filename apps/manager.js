@@ -4,6 +4,7 @@ import {
   restartLagrange,
   updateLagrange,
   killLagrange,
+  changeLagrangeSign,
 } from "./lagrange/lagrange.js"
 import { updateManager } from "./plugin/update.js"
 
@@ -33,6 +34,11 @@ export default class LagrangeManager extends plugin {
         {
           reg: "^#lagrange状态$",
           fnc: "status",
+          permission: "master",
+        },
+        {
+          reg: "^#lagrange切换签名.+$",
+          fnc: "changeSign",
           permission: "master",
         },
         {
@@ -78,12 +84,19 @@ export default class LagrangeManager extends plugin {
     e.reply(`bot online: ${e.bot?.stat?.online}\nbot good: ${e.bot?.stat?.good}`)
   }
 
+  async changeSign(e) {
+    const sign = e.msg.match(/^#lagrange切换签名(.+)$/)[1].trim()
+    changeLagrangeSign(sign)
+    await e.reply(`已切换签名为 ${sign}`)
+  }
+
   async help(e) {
     e.reply(
       "#lagrange重启 - 让机器人重新登录\n" +
         "#lagrange更新 - 更新Lagrange并重登\n" +
         "#lagrange停止 - 停止Lagrange, 停止后无备选方式则只能重新手动启动，谨慎操作\n" +
         "#lagrange状态 - 查看 Lagrange 状态，能发就是正常\n" +
+        "#lagrange切换签名 - 切换 Lagrange 签名服务地址, 需自行获取可用签名URL\n" +
         "#lagrange插件更新 - 更新本插件并重启\n" +
         "#lagrange帮助 - 发送这条帮助信息"
     )
