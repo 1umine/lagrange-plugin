@@ -26,7 +26,7 @@ async function startLagrange() {
     await downloadLagrange()
   }
 
-  let firstLogin = false
+  let firstLogin = true // 方便看lgr日志，设为 false 则后续登录不再输出 lagrange 的日志
   if (!fs.existsSync(`${LagrangeWorkDir}/keystore.json`)) {
     logger.warn(
       "\n\n\n\n首次登陆需要扫码，请扫描",

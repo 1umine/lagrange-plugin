@@ -2,7 +2,7 @@ import os from "node:os"
 import fs from "node:fs"
 import { Buffer } from "node:buffer"
 import compressing from "compressing"
-import { LagrangeDir, binPath, LagrangeReleaseDir } from "./constants.js"
+import { LagrangeDir, binPath, LagrangeReleaseDir, LagrangeWorkDir } from "./constants.js"
 
 /** 获取 Lagrange 下载链接 */
 function getReleaseUrl() {
@@ -57,7 +57,7 @@ export function moveExecutable() {
   )
   fs.rmSync(`${LagrangeReleaseDir}/Lagrange.Onebot`, { recursive: true })
   fs.chmod(binPath, 0o775, (err) => {
-    logger.warn(`chmod 失败, 可能无法成功启动, 请手动赋予 ${binPath} 执行权限`)
+    logger.warn(`chmod 失败, 可能无法成功启动, 请手动赋予 ${binPath} 执行权限(若能启动则忽略此消息)`)
   })
 }
 
@@ -78,10 +78,16 @@ export async function downloadLagrange(callback = moveExecutable) {
   let tmppath = `${LagrangeDir}/temp`
   fs.writeFileSync(tmppath, buffer)
 
-  if (isZip) {
-    await compressing.zip.decompress(tmppath, LagrangeReleaseDir)
-  } else {
-    await compressing.tar.decompress(tmppath, LagrangeReleaseDir)
+  try {
+    if (isZip) {
+      await compressing.zip.decompress(tmppath, LagrangeReleaseDir)
+    } else {
+      await compressing.tar.decompress(tmppath, LagrangeReleaseDir)
+    }
+  } catch (e) {
+    logger.error(`解压 ${url} 失败，可能下载文件损坏，请尝试手动下载并将可执行文件放到 
+      ${LagrangeWorkDir} 目录下并重命名为 ${binPath}, 并赋予执行权限(对于linux系统)`)
+    return false
   }
 
   fs.unlink(tmppath, (e) => {
