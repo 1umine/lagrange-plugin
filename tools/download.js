@@ -52,11 +52,13 @@ function findExecutable(path) {
 /** 移动下载好的 Lagrange 到运行目录下 */
 export function moveExecutable() {
   fs.renameSync(
-    findExecutable(`${LagrangeReleaseDir}/Lagrange.Onebot`),
+    findExecutable(LagrangeReleaseDir),
     binPath
   )
-  fs.rmSync(`${LagrangeReleaseDir}/Lagrange.Onebot`, { recursive: true })
-  fs.chmod(binPath, 0o775, (err) => {
+  for (let p of fs.readdirSync(LagrangeReleaseDir)) {
+    fs.rmSync(`${LagrangeReleaseDir}/${p}`, { recursive: true })
+  }
+  fs.chmod(binPath, 0o755, (err) => {
     logger.warn(`chmod 失败, 可能无法成功启动, 请手动赋予 ${binPath} 执行权限(若能启动则忽略此消息)`)
   })
 }
