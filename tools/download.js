@@ -82,7 +82,7 @@ export async function downloadLagrange(callback = moveExecutable) {
     if (isZip) {
       await compressing.zip.decompress(tmppath, LagrangeReleaseDir)
     } else {
-      await compressing.tar.decompress(tmppath, LagrangeReleaseDir)
+      await compressing.tgz.decompress(tmppath, LagrangeReleaseDir)
     }
   } catch (e) {
     logger.error(`解压 ${url} 失败，可能下载文件损坏，请尝试手动下载并将可执行文件放到 
