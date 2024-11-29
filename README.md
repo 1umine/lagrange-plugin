@@ -4,6 +4,9 @@
 
 **首次登录需要扫描一次二维码，稳定环境下后续无需扫码，一键登录**
 
+### Linux 不保证功能正常，仅在 Windows（11）平台正常操作测试下正常可用
+![it works on my machine](./resources/readme-image/works-on-my-machine.jpg)
+
 ## 安装
 进入 Yunzai 根目录下执行
 ```sh
