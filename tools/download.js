@@ -31,7 +31,7 @@ function getReleaseUrl() {
   ziptype = ziptype || "tar.gz"
   let originUrl =
     "https://github.com/LagrangeDev/Lagrange.Core/releases/download/nightly/" +
-    `Lagrange.OneBot_${platform}-${arch}_net8.0_SelfContained.${ziptype}`
+    `Lagrange.OneBot_${platform}-${arch}_net9.0_SelfContained.${ziptype}`
   return `https://mirror.ghproxy.com/${originUrl}`
 }
 
